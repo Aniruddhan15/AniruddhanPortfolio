@@ -1,109 +1,100 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { ArrowUpRight, BriefcaseBusiness, Code2, Mail, MoveUpRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight, BriefcaseBusiness, BrainCircuit, CalendarDays, CheckCircle2, Code2, Database, Download, ExternalLink, GraduationCap, Layers3, Mail, MapPin, Menu, MoveUpRight, Send, Sparkles, Workflow, X } from "lucide-react";
 import "./styles.css";
 
+const baseUrl = import.meta.env.BASE_URL;
+
+const navItems = ["home", "about", "experience", "projects", "skills", "contact"];
 const projects = [
-  {
-    number: "01",
-    type: "Web platform",
-    title: "The quiet power of a clear dashboard.",
-    description: "A focused workspace that turns complex operational data into confident next actions.",
-    tags: ["React", "Data design"],
-    accent: "coral",
-  },
-  {
-    number: "02",
-    type: "Product system",
-    title: "Making room for better decisions.",
-    description: "A modular component language built to keep teams moving quickly without losing the human touch.",
-    tags: ["Systems", "Prototyping"],
-    accent: "lime",
-  },
-  {
-    number: "03",
-    type: "Experiment",
-    title: "Small interactions, memorable moments.",
-    description: "A playful study in motion, rhythm, and the details that make a digital product feel alive.",
-    tags: ["Motion", "Creative code"],
-    accent: "blue",
-  },
+  { title: "AI-Powered Nutrition Analyzer", category: "GenAI", year: "2025", summary: "A deployed nutrition companion that reads meals from images, estimates macros, and turns a single upload into practical recommendations.", detail: "Built with Gemini Vision Pro, Python, Git, and Streamlit Community Cloud. The product combines meal recognition, macro-nutrient estimation, personalized recommendations, and dietary tracking in one focused workflow.", tags: ["Gemini Vision", "Python", "Streamlit"], link: "https://github.com/Aniruddhan15/NUTRITION_APP-USING-GEMINI-API", color: "orange" },
+  { title: "Brain Tumor Detection with ResNet-50", category: "Computer vision", year: "2025", summary: "An MRI classification pipeline tuned for robust tumor versus non-tumor prediction, with 99% AUC and a 12% accuracy lift over VGG-19.", detail: "The work combined transfer learning, augmentation, class balancing, preprocessing, and threshold optimization with TensorFlow, Keras, Scikit-learn, and OpenCV.", tags: ["ResNet-50", "TensorFlow", "OpenCV"], link: "mailto:aniruddhan26@gmail.com?subject=Brain%20Tumor%20Detection", color: "mint" },
+  { title: "DDoS Detection with Adaptive ML Pipelines", category: "Research", year: "2025", summary: "Scalable cloud-oriented machine learning pipelines for adaptive DDoS detection and more responsive security operations.", detail: "A research contribution focused on scalable deployment techniques, adaptive model workflows, and cloud security. The work is available on TechRxiv.", tags: ["MLOps", "AWS", "Docker"], link: "mailto:aniruddhan26@gmail.com?subject=DDoS%20Detection%20Research", color: "blue" },
+  { title: "Advertising Performance Modeling", category: "Applied ML", year: "2024", summary: "Predictive modeling and time-series analysis for digital advertising data, improving predictive accuracy by 7%.", detail: "At Fincrux Technologies, I used Python, statistical modeling, preprocessing, and data validation to identify revenue-impacting patterns for campaign and targeting decisions.", tags: ["Python", "Statistics", "Time series"], link: "mailto:aniruddhan26@gmail.com?subject=Advertising%20Modeling", color: "purple" },
+];
+
+const experience = [
+  { role: "Machine Learning Intern", company: "KCF Technologies", period: "Jun 2026 — Aug 2026", location: "State College, PA · Hybrid", icon: BrainCircuit, current: true, bullets: ["Developed and evaluated PPO and DQN fault-classification models across 30M+ industrial vibration sensor records.", "Built scalable preprocessing, experimentation, and inference workflows with Python, PySpark, Databricks, and MLflow.", "Mitigated temporal leakage and class imbalance, improving unhealthy-class recall by 20–30%." ] },
+  { role: "Research Author & Contributor", company: "Vellore Institute of Technology", period: "Dec 2024 — Jun 2025", location: "Chennai, India", icon: Sparkles, bullets: ["Contributed to four machine learning research works spanning medical imaging, quantum feature extraction, ensemble learning, and time-series forecasting.", "Co-authored work published in Scientific Reports and contributed to a TechRxiv preprint." ] },
+  { role: "Trainee & Project Contributor", company: "Fincrux Technologies LLP", period: "May 2024 — Aug 2024", location: "Chennai, India", icon: Workflow, bullets: ["Built predictive modeling pipelines for digital advertising data and improved accuracy by 7% through regularization, preprocessing, and validation.", "Analyzed time-series trends to surface revenue-impacting campaign and targeting patterns." ] },
+  { role: "ASO Intern", company: "MUFG Global Services", period: "Nov 2023 — Dec 2023", location: "Bengaluru, India", icon: Layers3, bullets: ["Developed an organization-wide leave management application using Viva, SharePoint Framework, Teams, and Office 365.", "Automated approval workflows with Power Automate, reducing manual follow-ups by 60%." ] },
+];
+
+const skillGroups = [
+  { label: "Languages", icon: Code2, items: ["Python", "SQL", "R", "C++"] },
+  { label: "Machine learning", icon: BrainCircuit, items: ["Scikit-learn", "PyTorch", "TensorFlow", "Keras", "Pandas", "NumPy", "Deep learning", "Time series"] },
+  { label: "GenAI & data", icon: Database, items: ["LangChain", "LlamaIndex", "RAG", "PySpark", "Databricks", "MLflow", "DVC"] },
+  { label: "Cloud & delivery", icon: Workflow, items: ["AWS", "Azure", "Vertex AI", "FastAPI", "Docker", "GitHub Actions", "CI/CD", "Streamlit", "Gradio"] },
 ];
 
 function App() {
-  return (
-    <main>
-      <nav className="nav shell" aria-label="Main navigation">
-        <a className="wordmark" href="#top" aria-label="Aniruddhan home">A<span>.</span></a>
-        <div className="nav-links">
-          <a href="#work">Selected work</a>
-          <a href="#about">About</a>
-          <a className="nav-contact" href="mailto:hello@aniruddhan.dev">Let's talk <ArrowUpRight size={15} /></a>
-        </div>
+  const [activeSection, setActiveSection] = useState("home");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [projectFilter, setProjectFilter] = useState("All");
+  const [selectedProject, setSelectedProject] = useState(null);
+  const categories = ["All", ...new Set(projects.map((project) => project.category))];
+
+  useEffect(() => {
+    const sections = navItems.map((id) => document.getElementById(id)).filter(Boolean);
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) setActiveSection(visible.target.id);
+    }, { rootMargin: "-25% 0px -55%", threshold: [0.1, 0.25, 0.5] });
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle("modal-open", Boolean(selectedProject));
+    return () => document.body.classList.remove("modal-open");
+  }, [selectedProject]);
+
+  const jumpTo = (id) => { setMenuOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); };
+  const visibleProjects = projectFilter === "All" ? projects : projects.filter((project) => project.category === projectFilter);
+
+  return <div className="site-shell">
+    <header className="site-header">
+      <a className="brand" href="#home" onClick={() => jumpTo("home")}><span>AN</span><small>ML / DS</small></a>
+      <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Close menu" : "Open menu"}>{menuOpen ? <X /> : <Menu />}</button>
+      <nav className={`main-nav ${menuOpen ? "is-open" : ""}`} aria-label="Primary navigation">
+        {navItems.map((item) => <a className={activeSection === item ? "active" : ""} href={`#${item}`} key={item} onClick={() => jumpTo(item)}>{item === "home" ? "Home" : item}</a>)}
+        <a className="nav-resume" href={`${baseUrl}resume.pdf`} target="_blank" rel="noreferrer"><Download size={15} /> Resume</a>
       </nav>
+    </header>
 
-      <section className="hero shell" id="top">
-        <div className="hero-copy">
-          <p className="eyebrow">Developer · Designer · Curious human</p>
-          <h1>Building digital things with <em>clarity</em> and care.</h1>
-          <p className="hero-intro">I&apos;m Aniruddhan, a product-minded developer who likes turning fuzzy ideas into useful, considered experiences.</p>
-          <a className="text-link" href="#work">See selected work <MoveUpRight size={17} /></a>
+    <main>
+      <section className="hero-section section-pad" id="home">
+        <div className="hero-grid">
+          <div className="hero-content reveal reveal-one">
+            <p className="kicker"><span className="live-dot" /> Applied ML / Data Science / AI</p>
+            <h1>Turning messy data into <span>useful intelligence.</span></h1>
+            <p className="hero-lede">I’m Aniruddhan Narasimhan, an Applied Machine Learning graduate student building models, pipelines, and products that hold up in the real world.</p>
+            <div className="hero-actions"><a className="button button-primary" href="#projects" onClick={() => jumpTo("projects")}>Explore my work <ArrowUpRight size={17} /></a><a className="button button-quiet" href="mailto:aniruddhan26@gmail.com">Let’s connect <Mail size={16} /></a></div>
+            <div className="hero-meta"><span><MapPin size={14} /> College Park, Maryland</span><span><CheckCircle2 size={14} /> Open to opportunities</span></div>
+          </div>
+          <div className="hero-visual reveal reveal-two"><div className="visual-grid" /><div className="visual-ring ring-one" /><div className="visual-ring ring-two" /><div className="profile-frame"><img src={`${baseUrl}profile.png`} alt="Aniruddhan Narasimhan" /></div><div className="orbit-card card-top"><span>Model → impact</span><strong>30M+</strong><small>sensor records</small></div><div className="orbit-card card-bottom"><span>Current focus</span><strong>RL</strong><small>fault classification</small></div></div>
         </div>
-        <div className="hero-mark" aria-hidden="true">
-          <div className="orbit orbit-one" />
-          <div className="orbit orbit-two" />
-          <div className="sun">A<span>.</span></div>
-          <span className="mark-label mark-label-top">Ideas → impact</span>
-          <span className="mark-label mark-label-bottom">Since 2024</span>
-        </div>
+        <a className="scroll-cue" href="#about" aria-label="Scroll to about"><span>Scroll to explore</span><ArrowDown size={16} /></a>
       </section>
 
-      <section className="signal-band">
-        <div className="shell signal-content">
-          <span>Currently available for select collaborations</span>
-          <span className="signal-line" />
-          <span className="signal-location">Based in India · Working worldwide</span>
-        </div>
-      </section>
+      <section className="marquee-band"><div className="marquee-track"><span>RESEARCH-LED</span><i>✳</i><span>IMPACT-FOCUSED</span><i>✳</i><span>ALWAYS LEARNING</span><i>✳</i><span>RESEARCH-LED</span><i>✳</i><span>IMPACT-FOCUSED</span></div></section>
 
-      <section className="work shell" id="work">
-        <div className="section-heading">
-          <p className="eyebrow">A few things I&apos;ve made</p>
-          <h2>Selected work<span>.</span></h2>
-          <p className="section-note">Different shapes, same obsession: make it understandable.</p>
-        </div>
-        <div className="project-list">
-          {projects.map((project) => (
-            <article className={`project project-${project.accent}`} key={project.number}>
-              <div className="project-number">{project.number}</div>
-              <div className="project-body">
-                <p className="project-type">{project.type}</p>
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <div className="tag-row">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-              </div>
-              <a className="project-arrow" href={`mailto:hello@aniruddhan.dev?subject=${encodeURIComponent(project.title)}`} aria-label={`Ask about ${project.title}`}><ArrowUpRight size={22} /></a>
-            </article>
-          ))}
-        </div>
-      </section>
+      <section className="section-pad about-section" id="about"><div className="section-intro reveal"><p className="eyebrow">01 / About</p><h2>Curious about the <em>why</em> behind the model.</h2></div><div className="about-layout"><div className="about-copy reveal"><p className="large-copy">I work at the intersection of applied machine learning, data systems, and human decisions.</p><p>Currently pursuing an M.S. in Applied Machine Learning at the University of Maryland, I enjoy taking a problem from raw data to a tested model to a tool someone can actually use.</p><p>My experience spans industrial health, medical imaging, advertising analytics, GenAI, and cloud deployment. I’m drawn to hard problems with measurable stakes and teams that care about doing the work properly.</p><a className="inline-link" href="mailto:aniruddhan26@gmail.com">Start a conversation <MoveUpRight size={16} /></a></div><div className="education-card reveal reveal-two"><div className="card-icon"><GraduationCap size={22} /></div><p className="eyebrow">Education</p><h3>M.S. Applied Machine Learning</h3><strong>University of Maryland — College Park</strong><div className="education-details"><span>Aug 2025 — May 2027</span><span>GPA 3.9 / 4.0</span></div><div className="education-divider" /><h3 className="smaller-title">B.Tech. Computer Science & Engineering</h3><strong>VIT, Chennai · AI & Robotics</strong><div className="education-details"><span>2021 — May 2025</span><span>GPA 3.6 / 4.0</span></div></div></div></section>
 
-      <section className="about shell" id="about">
-        <div className="about-aside"><p className="eyebrow">A little context</p><span className="about-symbol">✳</span></div>
-        <div className="about-copy">
-          <h2>Good work is a team sport.</h2>
-          <p>I care about the space between an ambitious idea and the moment it becomes real. My role is to bring structure to that space: ask better questions, sweat the details, and build things people enjoy using.</p>
-          <p>When I&apos;m away from a screen, I&apos;m probably collecting references, learning something new, or looking for a long walk.</p>
-          <a className="text-link" href="mailto:hello@aniruddhan.dev">Start a conversation <MoveUpRight size={17} /></a>
-        </div>
-      </section>
+      <section className="section-pad experience-section" id="experience"><div className="section-intro split-intro reveal"><div><p className="eyebrow">02 / Experience</p><h2>Where the work<br /><em>gets real.</em></h2></div><p>From industrial sensor data to research publications, each chapter has taught me to make models more honest, useful, and resilient.</p></div><div className="timeline">{experience.map((item, index) => { const Icon = item.icon; return <article className={`timeline-item reveal reveal-delay-${Math.min(index + 1, 4)}`} key={item.role}><div className="timeline-marker"><Icon size={18} /></div><div className="timeline-main"><div className="timeline-heading"><div><p className="eyebrow">{item.company}</p><h3>{item.role}</h3></div><span className="timeline-date"><CalendarDays size={14} /> {item.period}</span></div><p className="timeline-location"><MapPin size={13} /> {item.location}</p><ul>{item.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul></div></article>; })}</div></section>
 
-      <footer className="footer shell">
-        <div><span className="footer-label">Have a good one</span><strong>© 2024 Aniruddhan</strong></div>
-        <div className="socials"><a href="mailto:hello@aniruddhan.dev" aria-label="Email Aniruddhan"><Mail size={18} /></a><a href="https://github.com/Aniruddhan15" aria-label="Aniruddhan code on GitHub"><Code2 size={18} /></a><a href="https://www.linkedin.com" aria-label="Aniruddhan on LinkedIn"><BriefcaseBusiness size={18} /></a></div>
-      </footer>
+      <section className="section-pad projects-section" id="projects"><div className="section-intro split-intro reveal"><div><p className="eyebrow">03 / Selected work</p><h2>Built to answer<br /><em>better questions.</em></h2></div><p>Explore a selection of projects across computer vision, GenAI, applied modeling, and ML research.</p></div><div className="filter-row reveal">{categories.map((category) => <button className={projectFilter === category ? "filter-active" : ""} key={category} onClick={() => setProjectFilter(category)}>{category}</button>)}</div><div className="project-grid">{visibleProjects.map((project, index) => <article className={`project-card ${project.color} reveal reveal-delay-${Math.min(index + 1, 4)}`} key={project.title} onClick={() => setSelectedProject(project)}><div className="project-card-top"><span>{project.category}</span><span>{project.year}</span></div><div className="project-art"><div className="art-lines" /><div className="art-core">{project.category === "GenAI" ? <Sparkles /> : project.category === "Computer vision" ? <BrainCircuit /> : project.category === "Research" ? <Database /> : <Workflow />}</div></div><h3>{project.title}</h3><p>{project.summary}</p><div className="tag-row">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><button className="project-open" aria-label={`View ${project.title}`}><ArrowUpRight size={18} /></button></article>)}</div></section>
+
+      <section className="section-pad skills-section" id="skills"><div className="section-intro reveal"><p className="eyebrow">04 / Toolkit</p><h2>The stack is a means.<br /><em>The thinking is the craft.</em></h2></div><div className="skills-grid">{skillGroups.map((group, index) => { const Icon = group.icon; return <article className={`skill-group reveal reveal-delay-${index + 1}`} key={group.label}><div className="skill-title"><Icon size={19} /><h3>{group.label}</h3></div><div className="skill-list">{group.items.map((item) => <span key={item}>{item}</span>)}</div></article>; })}</div></section>
+
+      <section className="section-pad proof-section" id="proof"><div className="proof-panel reveal"><div><p className="eyebrow">05 / Research notes</p><h2>Four research works.<br /><em>One through-line.</em></h2></div><div className="proof-copy"><p>Medical imaging, quantum-driven feature extraction, ensemble learning, forecasting, and cloud security all point to the same belief: rigor makes useful intelligence possible.</p><a className="inline-link" href="mailto:aniruddhan26@gmail.com?subject=Research%20collaboration">Discuss research <MoveUpRight size={16} /></a></div></div><div className="publication-row reveal"><span>Published</span><strong>Enhanced Brain Tumour Prediction Using Quantum: A Hybrid Deep Learning Approach</strong><em>Scientific Reports · 2026</em></div><div className="publication-row reveal"><span>TechRxiv</span><strong>Scalable Enhancement of Cloud-Based DDoS Detection with Adaptive ML Pipelines</strong><em>Available online</em></div></section>
+
+      <section className="contact-section section-pad" id="contact"><div className="contact-inner reveal"><p className="eyebrow">06 / Contact</p><h2>Have a hard problem?<br /><em>Let’s make it legible.</em></h2><p>I’m always open to thoughtful conversations about machine learning, research, and building tools with real-world value.</p><a className="button button-primary" href="mailto:aniruddhan26@gmail.com">aniruddhan26@gmail.com <Send size={16} /></a><div className="contact-links"><a href="https://github.com/Aniruddhan15" target="_blank" rel="noreferrer"><Code2 size={16} /> GitHub</a><a href="https://www.linkedin.com/in/aniruddhan-narasimhan-15688021b/" target="_blank" rel="noreferrer"><BriefcaseBusiness size={16} /> LinkedIn</a></div></div></section>
     </main>
-  );
+
+    <footer className="site-footer"><span>© 2026 Aniruddhan Narasimhan</span><span>Built with curiosity · <a href="#home">Back to top ↑</a></span></footer>
+    {selectedProject && <div className="modal-backdrop" role="presentation" onClick={() => setSelectedProject(null)}><div className="project-modal" role="dialog" aria-modal="true" aria-labelledby="project-title" onClick={(event) => event.stopPropagation()}><button className="modal-close" onClick={() => setSelectedProject(null)} aria-label="Close project details"><X size={20} /></button><p className="eyebrow">{selectedProject.category} · {selectedProject.year}</p><h2 id="project-title">{selectedProject.title}</h2><p>{selectedProject.detail}</p><div className="tag-row">{selectedProject.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><a className="button button-primary" href={selectedProject.link} target={selectedProject.link.startsWith("http") ? "_blank" : undefined} rel="noreferrer">Open project <ExternalLink size={16} /></a></div></div>}
+  </div>;
 }
 
 createRoot(document.getElementById("root")).render(<StrictMode><App /></StrictMode>);
