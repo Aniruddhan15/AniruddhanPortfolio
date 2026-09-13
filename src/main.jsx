@@ -2,6 +2,7 @@ import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { ArrowDown, ArrowUpRight, BriefcaseBusiness, BrainCircuit, CalendarDays, CheckCircle2, Code2, Database, Download, ExternalLink, GraduationCap, Layers3, Mail, MapPin, Menu, MoveUpRight, Send, Sparkles, Workflow, X } from "lucide-react";
 import "./styles.css";
+import "./reveal.css";
 
 const baseUrl = import.meta.env.BASE_URL;
 
@@ -40,8 +41,20 @@ function App() {
       const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
       if (visible) setActiveSection(visible.target.id);
     }, { rootMargin: "-25% 0px -55%", threshold: [0.1, 0.25, 0.5] });
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: "0px 0px 220px 0px", threshold: 0.01 });
     sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+    document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
+    return () => {
+      observer.disconnect();
+      revealObserver.disconnect();
+    };
   }, []);
 
   useEffect(() => {
