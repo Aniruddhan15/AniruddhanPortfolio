@@ -28,6 +28,22 @@ const skillGroups = [
   { label: "Cloud & delivery", icon: Workflow, items: ["AWS", "Azure", "Vertex AI", "FastAPI", "Docker", "GitHub Actions", "CI/CD", "Streamlit", "Gradio"] },
 ];
 
+const mastersCoursework = [
+  { label: "Fall 2026", courses: ["MSML 641 — Machine Learning", "MSML 643 — Time Series", "MSAI 633 — Agentic AI"] },
+  { label: "Spring 2026", courses: ["MSML 604 — Introduction to Optimization", "MSML 605 — Computing Systems for Machine Learning", "MSML 606 — Algorithms and Data Structures for Machine Learning"] },
+  { label: "Fall 2025", courses: ["MSML 603 — Principles of Machine Learning", "MSML 602 — Principles of Data Science", "MSML 601 — Probability and Statistics"] },
+];
+
+const focusTree = {
+  primary: ["Machine Learning", "Data Science", "Agentic AI"],
+  secondary: [
+    { label: "MLOps", parent: "Machine Learning" },
+    { label: "Model Optimization", parent: "Machine Learning" },
+    { label: "NLP", parent: "Data Science" },
+    { label: "Time Series", parent: "Data Science" },
+  ]
+};
+
 const publications = [
   { title: "Enhanced Brain Tumour Prediction Using Quantum: A Hybrid Deep Learning Approach", status: "Published", description: "Peer-reviewed — Scientific Reports (Nature Portfolio) — ResNet + PennyLane quantum circuit hybrid", link: "https://www.nature.com/articles/s41598-026-51263-x", external: true },
   { title: "Scalable Enhancement of Cloud-Based DDoS Detection with Adaptive ML Pipelines", status: "Published", description: "Peer-reviewed research — TechRxiv preprint", link: "https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.175037203.37181551/v1", external: true },
@@ -91,16 +107,42 @@ function App() {
             <h1>Turning messy data into <span>useful intelligence.</span></h1>
             <p className="hero-lede">I’m Aniruddhan Narasimhan, an Applied Machine Learning graduate student building models, pipelines, and products that hold up in the real world.</p>
             <div className="hero-actions"><a className="button button-primary" href="#projects" onClick={() => jumpTo("projects")}>Explore my work <ArrowUpRight size={17} /></a><a className="button button-quiet" href="mailto:aniruddhan26@gmail.com">Let’s connect <Mail size={16} /></a></div>
+            <div className="availability-status"><span className="status-pulse" /><span>Open to Full-Time 2027 Opportunities</span></div>
+            <p className="availability-tags">Data Science • ML Engineering • AI Engineering • Data Analytics • Data Engineering</p>
             <div className="hero-meta"><span><MapPin size={14} /> College Park, Maryland</span><span><CheckCircle2 size={14} /> Open to opportunities</span></div>
           </div>
-          <div className="hero-visual reveal reveal-two"><div className="visual-grid" /><div className="visual-ring ring-one" /><div className="visual-ring ring-two" /><div className="profile-frame"><img src={`${baseUrl}profile.png`} alt="Aniruddhan Narasimhan" /></div><div className="orbit-card card-top"><span>Model → impact</span><strong>30M+</strong><small>sensor records</small></div><div className="orbit-card card-bottom"><span>Current focus</span><strong>RL</strong><small>fault classification</small></div></div>
+          <div className="hero-visual reveal reveal-two">
+            <div className="visual-grid" />
+            <div className="visual-ring ring-one" />
+            <div className="visual-ring ring-two" />
+            <div className="profile-frame"><img src={`${baseUrl}profile.png`} alt="Aniruddhan Narasimhan" /></div>
+            <div className="orbit-card card-top"><span>Model → impact</span><strong>30M+</strong><small>sensor records</small></div>
+            <div className="orbit-card card-bottom"><span>Current focus</span><strong>AI</strong><small>knowledge tree</small></div>
+            <div className="ai-focus-tree" aria-label="AI knowledge focus tree">
+              <div className="tree-root">AI</div>
+              <div className="tree-row tree-primary">
+                {focusTree.primary.map((node, index) => (
+                  <div className="tree-node" key={node} style={{ animationDelay: `${0.16 + index * 0.18}s` }}>
+                    <span>{node}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="tree-row tree-secondary">
+                {focusTree.secondary.map((node, index) => (
+                  <div className="tree-node tree-node-secondary" key={node.label} style={{ animationDelay: `${0.42 + index * 0.12}s` }}>
+                    <span>{node.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
         <a className="scroll-cue" href="#about" aria-label="Scroll to about"><span>Scroll to explore</span><ArrowDown size={16} /></a>
       </section>
 
       <section className="marquee-band"><div className="marquee-track"><span>RESEARCH-LED</span><i>✳</i><span>IMPACT-FOCUSED</span><i>✳</i><span>ALWAYS LEARNING</span><i>✳</i><span>RESEARCH-LED</span><i>✳</i><span>IMPACT-FOCUSED</span></div></section>
 
-      <section className="section-pad about-section" id="about"><div className="section-intro reveal"><p className="eyebrow">01 / About</p><h2>Curious about the <em>why</em> behind the model.</h2></div><div className="about-layout"><div className="about-copy reveal"><p className="large-copy">I work at the intersection of applied machine learning, data systems, and human decisions.</p><p>Currently pursuing an M.S. in Applied Machine Learning at the University of Maryland, I enjoy taking a problem from raw data to a tested model to a tool someone can actually use.</p><p>My experience spans industrial health, medical imaging, advertising analytics, GenAI, and cloud deployment. I’m drawn to hard problems with measurable stakes and teams that care about doing the work properly.</p><a className="inline-link" href="mailto:aniruddhan26@gmail.com">Start a conversation <MoveUpRight size={16} /></a></div><div className="education-card reveal reveal-two"><div className="card-icon"><GraduationCap size={22} /></div><p className="eyebrow">Education</p><h3>M.S. Applied Machine Learning</h3><strong>University of Maryland — College Park</strong><div className="education-details"><span>Aug 2025 — May 2027</span><span>GPA 3.9 / 4.0</span></div><div className="education-divider" /><h3 className="smaller-title">B.Tech. Computer Science & Engineering</h3><strong>VIT, Chennai · AI & Robotics</strong><div className="education-details"><span>2021 — May 2025</span><span>GPA 3.6 / 4.0</span></div></div></div></section>
+      <section className="section-pad about-section" id="about"><div className="section-intro reveal"><p className="eyebrow">01 / About</p><h2>Curious about the <em>why</em> behind the model.</h2></div><div className="about-layout"><div className="about-copy reveal"><p className="large-copy">I work at the intersection of applied machine learning, data systems, and human decisions.</p><p>Currently pursuing an M.S. in Applied Machine Learning at the University of Maryland, I enjoy taking a problem from raw data to a tested model to a tool someone can actually use.</p><p>My experience spans industrial health, medical imaging, advertising analytics, GenAI, and cloud deployment. I’m drawn to hard problems with measurable stakes and teams that care about doing the work properly.</p><a className="inline-link" href="mailto:aniruddhan26@gmail.com">Start a conversation <MoveUpRight size={16} /></a></div><div className="education-card reveal reveal-two"><div className="card-icon"><GraduationCap size={22} /></div><p className="eyebrow">Education</p><h3>M.S. Applied Machine Learning</h3><strong>University of Maryland — College Park</strong><div className="education-details"><span>Aug 2025 — May 2027</span><span>GPA 3.7 / 4.0</span></div><div className="coursework-tree" aria-label="Master's coursework hierarchy"><div className="coursework-root">Coursework</div><div className="coursework-branches">{mastersCoursework.map((semester, index) => (<div className="coursework-branch" key={semester.label} style={{ animationDelay: `${0.18 + index * 0.18}s` }}><div className="semester-node">{semester.label}</div><div className="semester-courses">{semester.courses.map((course, courseIndex) => (<span className="course-item" key={course} style={{ animationDelay: `${0.36 + index * 0.18 + courseIndex * 0.12}s` }}>{course}</span>))}</div></div>))}</div></div><div className="education-divider" /><h3 className="smaller-title">B.Tech. Computer Science & Engineering</h3><strong>VIT, Chennai · AI & Robotics</strong><div className="education-details"><span>2021 — May 2025</span><span>GPA 3.6 / 4.0</span></div></div></div></section>
 
       <section className="section-pad experience-section" id="experience"><div className="section-intro split-intro reveal"><div><p className="eyebrow">02 / Experience</p><h2>Where the work<br /><em>gets real.</em></h2></div><p>From industrial sensor data to research publications, each chapter has taught me to make models more honest, useful, and resilient.</p></div><div className="timeline">{experience.map((item, index) => { const Icon = item.icon; return <article className={`timeline-item reveal reveal-delay-${Math.min(index + 1, 4)}`} key={item.role}><div className="timeline-marker"><Icon size={18} /></div><div className="timeline-main"><div className="timeline-heading"><div><p className="eyebrow">{item.company}</p><h3>{item.role}</h3></div><span className="timeline-date"><CalendarDays size={14} /> {item.period}</span></div><p className="timeline-location"><MapPin size={13} /> {item.location}</p><ul>{item.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul></div></article>; })}</div></section>
 
