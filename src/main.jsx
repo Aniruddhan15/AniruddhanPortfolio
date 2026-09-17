@@ -31,6 +31,19 @@ const experience = [
     technologies: ["Python", "PySpark", "Databricks", "MLflow", "PPO", "DQN", "Reinforcement Learning", "Time Series", "Pandas", "Scikit-learn", "Git"]
   },
   {
+    role: "Research Author & Contributor",
+    company: "Vellore Institute of Technology (VIT), Chennai",
+    period: "Dec 2024 – Jun 2025",
+    location: "Chennai, India",
+    icon: Sparkles,
+    featured: false,
+    achievements: [
+      "Co-authored \"Enhanced Brain Tumour Prediction Using Quantum: A Hybrid Deep Learning Approach,\" published in Scientific Reports (2026).",
+      "Co-authored \"Scalable Enhancement of Cloud-Based DDoS Detection with Adaptive ML Pipelines,\" available on TechRxiv."
+    ],
+    technologies: ["Scientific Reports", "TechRxiv", "Deep Learning", "Quantum", "Cloud Security", "Research"]
+  },
+  {
     role: "Trainee & Project Contributor",
     company: "Fincrux Technologies LLP",
     period: "May 2024 – Aug 2024",
@@ -63,10 +76,11 @@ const experience = [
 ];
 
 const skillGroups = [
-  { label: "Languages", icon: Code2, items: ["Python", "SQL", "R", "C++"] },
-  { label: "Machine learning", icon: BrainCircuit, items: ["Scikit-learn", "PyTorch", "TensorFlow", "Keras", "Pandas", "NumPy", "Deep learning", "Time series"] },
-  { label: "GenAI & data", icon: Database, items: ["LangChain", "LlamaIndex", "RAG", "PySpark", "Databricks", "MLflow", "DVC"] },
-  { label: "Cloud & delivery", icon: Workflow, items: ["AWS", "Azure", "Vertex AI", "FastAPI", "Docker", "GitHub Actions", "CI/CD", "Streamlit", "Gradio"] },
+  { label: "Programming & Databases", icon: Code2, items: ["Python", "SQL", "R", "C++", "PostgreSQL", "Microsoft SQL Server"] },
+  { label: "Machine Learning & AI", icon: BrainCircuit, items: ["Scikit-learn", "PyTorch", "TensorFlow", "Keras", "Deep Learning", "NLP", "Time Series", "Statistical Modeling", "Model Optimization"] },
+  { label: "GenAI & Agentic AI", icon: Sparkles, items: ["LangChain", "LlamaIndex", "RAG", "Agentic AI"] },
+  { label: "Data & MLOps", icon: Database, items: ["Pandas", "NumPy", "PySpark", "Databricks", "MLflow", "DVC", "FastAPI", "Docker", "Git", "GitHub Actions", "CI/CD"] },
+  { label: "Cloud & Deployment", icon: Workflow, items: ["AWS", "Azure", "Vertex AI", "Flask", "Streamlit", "Gradio"] },
 ];
 
 const mastersCoursework = [
@@ -76,12 +90,11 @@ const mastersCoursework = [
 ];
 
 const focusTree = {
-  primary: ["Machine Learning", "Data Science", "Agentic AI"],
-  secondary: [
-    { label: "MLOps", parent: "Machine Learning" },
-    { label: "Model Optimization", parent: "Machine Learning" },
-    { label: "NLP", parent: "Data Science" },
-    { label: "Time Series", parent: "Data Science" },
+  root: "AI",
+  groups: [
+    { label: "Machine Learning", children: ["MLOps", "Model Optimization"] },
+    { label: "Data Science", children: ["NLP", "Time Series"] },
+    { label: "Agentic AI", children: [] }
   ]
 };
 
@@ -158,24 +171,6 @@ function App() {
             <div className="visual-ring ring-two" />
             <div className="profile-frame"><img src={`${baseUrl}profile.png`} alt="Aniruddhan Narasimhan" /></div>
             <div className="orbit-card card-top"><span>Model → impact</span><strong>30M+</strong><small>sensor records</small></div>
-            <div className="orbit-card card-bottom"><span>Current focus</span><strong>AI</strong><small>knowledge tree</small></div>
-            <div className="ai-focus-tree" aria-label="AI knowledge focus tree">
-              <div className="tree-root">AI</div>
-              <div className="tree-row tree-primary">
-                {focusTree.primary.map((node, index) => (
-                  <div className="tree-node" key={node} style={{ animationDelay: `${0.16 + index * 0.18}s` }}>
-                    <span>{node}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="tree-row tree-secondary">
-                {focusTree.secondary.map((node, index) => (
-                  <div className="tree-node tree-node-secondary" key={node.label} style={{ animationDelay: `${0.42 + index * 0.12}s` }}>
-                    <span>{node.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
         <a className="scroll-cue" href="#about" aria-label="Scroll to about"><span>Scroll to explore</span><ArrowDown size={16} /></a>
@@ -184,6 +179,25 @@ function App() {
       <section className="marquee-band"><div className="marquee-track"><span>RESEARCH-LED</span><i>✳</i><span>IMPACT-FOCUSED</span><i>✳</i><span>ALWAYS LEARNING</span><i>✳</i><span>RESEARCH-LED</span><i>✳</i><span>IMPACT-FOCUSED</span></div></section>
 
       <section className="section-pad about-section" id="about"><div className="section-intro reveal"><p className="eyebrow">01 / About</p><h2>Curious about the <em>why</em> behind the model.</h2></div><div className="about-layout"><div className="about-copy reveal"><p className="large-copy">I work at the intersection of applied machine learning, data systems, and human decisions.</p><p>Currently pursuing an M.S. in Applied Machine Learning at the University of Maryland, I enjoy taking a problem from raw data to a tested model to a tool someone can actually use.</p><p>My experience spans industrial health, medical imaging, advertising analytics, GenAI, and cloud deployment. I’m drawn to hard problems with measurable stakes and teams that care about doing the work properly.</p><a className="inline-link" href="mailto:aniruddhan26@gmail.com">Start a conversation <MoveUpRight size={16} /></a></div><div className="education-card reveal reveal-two"><div className="card-icon"><GraduationCap size={22} /></div><p className="eyebrow">Education</p><h3>M.S. Applied Machine Learning</h3><strong>University of Maryland — College Park</strong><div className="education-details"><span>Aug 2025 — May 2027</span><span>GPA 3.7 / 4.0</span></div><div className="coursework-tree" aria-label="Master's coursework hierarchy"><div className="coursework-root">Coursework</div><div className="coursework-branches">{mastersCoursework.map((semester, index) => (<div className="coursework-branch" key={semester.label} style={{ animationDelay: `${0.18 + index * 0.18}s` }}><div className="semester-node">{semester.label}</div><div className="semester-courses">{semester.courses.map((course, courseIndex) => (<span className="course-item" key={course} style={{ animationDelay: `${0.36 + index * 0.18 + courseIndex * 0.12}s` }}>{course}</span>))}</div></div>))}</div></div><div className="education-divider" /><h3 className="smaller-title">B.Tech. Computer Science & Engineering</h3><strong>VIT, Chennai · AI & Robotics</strong><div className="education-details"><span>2021 — May 2025</span><span>GPA 3.6 / 4.0</span></div></div></div></section>
+
+      <div className="focus-tree-wrapper reveal">
+        <div className="focus-tree-intro"><p className="eyebrow">Current Focus</p></div>
+        <div className="knowledge-tree" aria-label="AI knowledge focus tree">
+          <div className="tree-root-wrap"><div className="tree-root">{focusTree.root}</div></div>
+          <div className="tree-branches">
+            {focusTree.groups.map((group) => (
+              <div className="tree-branch" key={group.label}>
+                <div className="tree-node tree-node-main">{group.label}</div>
+                {group.children.length > 0 && (
+                  <div className="tree-children">
+                    {group.children.map((child) => <div className="tree-node tree-node-small" key={child}>{child}</div>)}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
       <section className="section-pad experience-section" id="experience"><div className="section-intro split-intro reveal"><div><p className="eyebrow">02 / Experience</p><h2>Where the work<br /><em>gets real.</em></h2></div><p>From industrial sensor data to enterprise workflows, each chapter has taught me to make models more honest, useful, and resilient.</p></div><div className="experience-list">{experience.map((item, index) => { const Icon = item.icon; return <article className={`experience-card reveal reveal-delay-${Math.min(index + 1, 4)} ${item.featured ? "featured" : ""}`} key={`${item.company}-${item.role}`}><div className="experience-header"><div className="experience-company-block"><div className="experience-icon"><Icon size={18} /></div><div><p className="eyebrow">{item.company}</p><h3>{item.role}</h3></div></div><div className="experience-meta"><span className="experience-date"><CalendarDays size={13} /> {item.period}</span><span className="experience-location"><MapPin size={13} /> {item.location}</span></div></div><ul className="experience-points">{item.achievements.map((achievement) => <li key={achievement}>{achievement.split(/(30M\+|20–30%|7%|60%|40%)/g).map((part, index) => /^(30M\+|20–30%|7%|60%|40%)$/.test(part) ? <strong key={`${part}-${index}`}>{part}</strong> : <span key={`${part}-${index}`}>{part}</span>)}</li>)}</ul><div className="experience-tech">{item.technologies.map((tech) => <span key={tech}>{tech}</span>)}</div></article>; })}</div></section>
 
