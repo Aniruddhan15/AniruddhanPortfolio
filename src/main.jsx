@@ -15,10 +15,51 @@ const projects = [
 ];
 
 const experience = [
-  { role: "Machine Learning Intern", company: "KCF Technologies", period: "Jun 2026 — Aug 2026", location: "State College, PA · Hybrid", icon: BrainCircuit, current: true, bullets: ["Developed and evaluated PPO and DQN fault-classification models across 30M+ industrial vibration sensor records.", "Built scalable preprocessing, experimentation, and inference workflows with Python, PySpark, Databricks, and MLflow.", "Mitigated temporal leakage and class imbalance, improving unhealthy-class recall by 20–30%." ] },
-  { role: "Research Author & Contributor", company: "Vellore Institute of Technology", period: "Dec 2024 — Jun 2025", location: "Chennai, India", icon: Sparkles, bullets: ["Contributed to four machine learning research works spanning medical imaging, quantum feature extraction, ensemble learning, and time-series forecasting.", "Co-authored work published in Scientific Reports and contributed to a TechRxiv preprint." ] },
-  { role: "Trainee & Project Contributor", company: "Fincrux Technologies LLP", period: "May 2024 — Aug 2024", location: "Chennai, India", icon: Workflow, bullets: ["Built predictive modeling pipelines for digital advertising data and improved accuracy by 7% through regularization, preprocessing, and validation.", "Analyzed time-series trends to surface revenue-impacting campaign and targeting patterns." ] },
-  { role: "ASO Intern", company: "MUFG Global Services", period: "Nov 2023 — Dec 2023", location: "Bengaluru, India", icon: Layers3, bullets: ["Developed an organization-wide leave management application using Viva, SharePoint Framework, Teams, and Office 365.", "Automated approval workflows with Power Automate, reducing manual follow-ups by 60%." ] },
+  {
+    role: "Machine Learning Intern",
+    company: "KCF Technologies",
+    period: "Jun 2026 – Aug 2026",
+    location: "United States",
+    icon: BrainCircuit,
+    featured: true,
+    achievements: [
+      "Large-Scale Industrial ML — Developed and evaluated reinforcement learning-based fault classification systems using PPO and DQN across 30M+ industrial vibration sensor records, spanning multiple asset types, monitoring points, and X/Y vibration axes.",
+      "Fault Detection Performance — Improved unhealthy-class recall by 20–30% through model experimentation, class-sensitive evaluation, feature engineering, and preprocessing improvements, prioritizing reduction of critical missed equipment faults.",
+      "Production-Oriented ML Pipeline — Built scalable preprocessing, experimentation, and inference workflows using PySpark and Databricks, including missing-data handling, asset-level processing, feature preparation, model inference, and experiment tracking with MLflow.",
+      "Time-Series ML Reliability — Identified and addressed temporal data leakage, class imbalance, and evaluation risks caused by randomized splitting, full-dataset scaling, and preprocessing practices; introduced chronological evaluation and assessed models using precision, recall, F1-score, and confusion matrices."
+    ],
+    technologies: ["Python", "PySpark", "Databricks", "MLflow", "PPO", "DQN", "Reinforcement Learning", "Time Series", "Pandas", "Scikit-learn", "Git"]
+  },
+  {
+    role: "Trainee & Project Contributor",
+    company: "Fincrux Technologies LLP",
+    period: "May 2024 – Aug 2024",
+    location: "Chennai, India",
+    icon: Workflow,
+    featured: false,
+    achievements: [
+      "Predictive Modeling — Developed predictive modeling pipelines for digital advertising data, applying statistical modeling, preprocessing, feature analysis, and model validation to support data-driven decision making.",
+      "Measurable Model Improvement — Improved predictive accuracy by 7% through regularization, preprocessing improvements, and systematic data-validation techniques.",
+      "Time-Series & Revenue Analysis — Analyzed time-series trends and advertising performance data to uncover revenue-impacting patterns and provide insights supporting campaign and audience-targeting decisions.",
+      "Data-to-Decision Workflow — Transformed raw advertising data into actionable analytical insights by combining exploratory analysis, predictive modeling, model evaluation, and communication of findings to project stakeholders."
+    ],
+    technologies: ["Python", "Pandas", "NumPy", "Scikit-learn", "Statistical Modeling", "Time-Series Analysis", "Data Visualization", "Predictive Modeling"]
+  },
+  {
+    role: "ASO Intern",
+    company: "MUFG Global Services",
+    period: "Nov 2023 – Dec 2023",
+    location: "Bengaluru, India",
+    icon: Layers3,
+    featured: false,
+    achievements: [
+      "Enterprise Application Development — Developed an organization-wide leave management application using Microsoft Viva and SharePoint Framework, integrating the workflow with Microsoft Teams and Office 365.",
+      "Workflow Automation — Automated employee leave approval workflows using Power Automate, enabling automated notifications and reducing manual follow-ups by 60%.",
+      "Operational Impact — Improved request-handling efficiency by 40% by replacing manual coordination with structured approval workflows and centralized request processing.",
+      "Production Delivery — Contributed to an enterprise application deployed for organizational use, gaining experience with production deployment, business requirements, workflow design, collaboration, and Agile delivery practices."
+    ],
+    technologies: ["Microsoft Viva", "SharePoint Framework", "Power Automate", "Microsoft Teams", "Office 365", "Workflow Automation", "Agile"]
+  }
 ];
 
 const skillGroups = [
@@ -144,7 +185,7 @@ function App() {
 
       <section className="section-pad about-section" id="about"><div className="section-intro reveal"><p className="eyebrow">01 / About</p><h2>Curious about the <em>why</em> behind the model.</h2></div><div className="about-layout"><div className="about-copy reveal"><p className="large-copy">I work at the intersection of applied machine learning, data systems, and human decisions.</p><p>Currently pursuing an M.S. in Applied Machine Learning at the University of Maryland, I enjoy taking a problem from raw data to a tested model to a tool someone can actually use.</p><p>My experience spans industrial health, medical imaging, advertising analytics, GenAI, and cloud deployment. I’m drawn to hard problems with measurable stakes and teams that care about doing the work properly.</p><a className="inline-link" href="mailto:aniruddhan26@gmail.com">Start a conversation <MoveUpRight size={16} /></a></div><div className="education-card reveal reveal-two"><div className="card-icon"><GraduationCap size={22} /></div><p className="eyebrow">Education</p><h3>M.S. Applied Machine Learning</h3><strong>University of Maryland — College Park</strong><div className="education-details"><span>Aug 2025 — May 2027</span><span>GPA 3.7 / 4.0</span></div><div className="coursework-tree" aria-label="Master's coursework hierarchy"><div className="coursework-root">Coursework</div><div className="coursework-branches">{mastersCoursework.map((semester, index) => (<div className="coursework-branch" key={semester.label} style={{ animationDelay: `${0.18 + index * 0.18}s` }}><div className="semester-node">{semester.label}</div><div className="semester-courses">{semester.courses.map((course, courseIndex) => (<span className="course-item" key={course} style={{ animationDelay: `${0.36 + index * 0.18 + courseIndex * 0.12}s` }}>{course}</span>))}</div></div>))}</div></div><div className="education-divider" /><h3 className="smaller-title">B.Tech. Computer Science & Engineering</h3><strong>VIT, Chennai · AI & Robotics</strong><div className="education-details"><span>2021 — May 2025</span><span>GPA 3.6 / 4.0</span></div></div></div></section>
 
-      <section className="section-pad experience-section" id="experience"><div className="section-intro split-intro reveal"><div><p className="eyebrow">02 / Experience</p><h2>Where the work<br /><em>gets real.</em></h2></div><p>From industrial sensor data to research publications, each chapter has taught me to make models more honest, useful, and resilient.</p></div><div className="timeline">{experience.map((item, index) => { const Icon = item.icon; return <article className={`timeline-item reveal reveal-delay-${Math.min(index + 1, 4)}`} key={item.role}><div className="timeline-marker"><Icon size={18} /></div><div className="timeline-main"><div className="timeline-heading"><div><p className="eyebrow">{item.company}</p><h3>{item.role}</h3></div><span className="timeline-date"><CalendarDays size={14} /> {item.period}</span></div><p className="timeline-location"><MapPin size={13} /> {item.location}</p><ul>{item.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul></div></article>; })}</div></section>
+      <section className="section-pad experience-section" id="experience"><div className="section-intro split-intro reveal"><div><p className="eyebrow">02 / Experience</p><h2>Where the work<br /><em>gets real.</em></h2></div><p>From industrial sensor data to enterprise workflows, each chapter has taught me to make models more honest, useful, and resilient.</p></div><div className="experience-list">{experience.map((item, index) => { const Icon = item.icon; return <article className={`experience-card reveal reveal-delay-${Math.min(index + 1, 4)} ${item.featured ? "featured" : ""}`} key={`${item.company}-${item.role}`}><div className="experience-header"><div className="experience-company-block"><div className="experience-icon"><Icon size={18} /></div><div><p className="eyebrow">{item.company}</p><h3>{item.role}</h3></div></div><div className="experience-meta"><span className="experience-date"><CalendarDays size={13} /> {item.period}</span><span className="experience-location"><MapPin size={13} /> {item.location}</span></div></div><ul className="experience-points">{item.achievements.map((achievement) => <li key={achievement}>{achievement.split(/(30M\+|20–30%|7%|60%|40%)/g).map((part, index) => /^(30M\+|20–30%|7%|60%|40%)$/.test(part) ? <strong key={`${part}-${index}`}>{part}</strong> : <span key={`${part}-${index}`}>{part}</span>)}</li>)}</ul><div className="experience-tech">{item.technologies.map((tech) => <span key={tech}>{tech}</span>)}</div></article>; })}</div></section>
 
       <section className="section-pad projects-section" id="projects"><div className="section-intro split-intro reveal"><div><p className="eyebrow">03 / Selected work</p><h2>Built to answer<br /><em>better questions.</em></h2></div><p>Explore a selection of projects across computer vision, GenAI, applied modeling, and ML research.</p></div><div className="filter-row reveal">{categories.map((category) => <button className={projectFilter === category ? "filter-active" : ""} key={category} onClick={() => setProjectFilter(category)}>{category}</button>)}</div><div className="project-grid">{visibleProjects.map((project, index) => <article className={`project-card ${project.color} reveal reveal-delay-${Math.min(index + 1, 4)}`} key={project.title} onClick={() => setSelectedProject(project)}><div className="project-card-top"><span>{project.category}</span><span>{project.year}</span></div><div className="project-art"><div className="art-lines" /><div className="art-core">{project.category === "GenAI" ? <Sparkles /> : project.category === "Computer vision" ? <BrainCircuit /> : project.category === "Research" ? <Database /> : <Workflow />}</div></div><h3>{project.title}</h3><p>{project.summary}</p><div className="tag-row">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><button className="project-open" aria-label={`View ${project.title}`}><ArrowUpRight size={18} /></button></article>)}</div></section>
 
