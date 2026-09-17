@@ -16,7 +16,7 @@ const projects = [
 
 const experience = [
   {
-    role: "Machine Learning Intern",
+    role: "Data Science Intern",
     company: "KCF Technologies",
     period: "Jun 2026 – Aug 2026",
     location: "United States",
@@ -88,15 +88,6 @@ const mastersCoursework = [
   { label: "Spring 2026", courses: ["MSML 604 — Introduction to Optimization", "MSML 605 — Computing Systems for Machine Learning", "MSML 606 — Algorithms and Data Structures for Machine Learning"] },
   { label: "Fall 2025", courses: ["MSML 603 — Principles of Machine Learning", "MSML 602 — Principles of Data Science", "MSML 601 — Probability and Statistics"] },
 ];
-
-const focusTree = {
-  root: "AI",
-  groups: [
-    { label: "Machine Learning", children: ["MLOps", "Model Optimization"] },
-    { label: "Data Science", children: ["NLP", "Time Series"] },
-    { label: "Agentic AI", children: [] }
-  ]
-};
 
 const publications = [
   { title: "Enhanced Brain Tumour Prediction Using Quantum: A Hybrid Deep Learning Approach", status: "Published", description: "Peer-reviewed — Scientific Reports (Nature Portfolio) — ResNet + PennyLane quantum circuit hybrid", link: "https://www.nature.com/articles/s41598-026-51263-x", external: true },
@@ -179,24 +170,6 @@ function App() {
       <section className="marquee-band"><div className="marquee-track"><span>RESEARCH-LED</span><i>✳</i><span>IMPACT-FOCUSED</span><i>✳</i><span>ALWAYS LEARNING</span><i>✳</i><span>RESEARCH-LED</span><i>✳</i><span>IMPACT-FOCUSED</span></div></section>
 
       <section className="section-pad about-section" id="about"><div className="section-intro reveal"><p className="eyebrow">01 / About</p><h2>Curious about the <em>why</em> behind the model.</h2></div><div className="about-layout"><div className="about-copy reveal"><p className="large-copy">I work at the intersection of applied machine learning, data systems, and human decisions.</p><p>Currently pursuing an M.S. in Applied Machine Learning at the University of Maryland, I enjoy taking a problem from raw data to a tested model to a tool someone can actually use.</p><p>My experience spans industrial health, medical imaging, advertising analytics, GenAI, and cloud deployment. I’m drawn to hard problems with measurable stakes and teams that care about doing the work properly.</p><a className="inline-link" href="mailto:aniruddhan26@gmail.com">Start a conversation <MoveUpRight size={16} /></a></div><div className="education-card reveal reveal-two"><div className="card-icon"><GraduationCap size={22} /></div><p className="eyebrow">Education</p><h3>M.S. Applied Machine Learning</h3><strong>University of Maryland — College Park</strong><div className="education-details"><span>Aug 2025 — May 2027</span><span>GPA 3.7 / 4.0</span></div><div className="coursework-tree" aria-label="Master's coursework hierarchy"><div className="coursework-root">Coursework</div><div className="coursework-branches">{mastersCoursework.map((semester, index) => (<div className="coursework-branch" key={semester.label} style={{ animationDelay: `${0.18 + index * 0.18}s` }}><div className="semester-node">{semester.label}</div><div className="semester-courses">{semester.courses.map((course, courseIndex) => (<span className="course-item" key={course} style={{ animationDelay: `${0.36 + index * 0.18 + courseIndex * 0.12}s` }}>{course}</span>))}</div></div>))}</div></div><div className="education-divider" /><h3 className="smaller-title">B.Tech. Computer Science & Engineering</h3><strong>VIT, Chennai · AI & Robotics</strong><div className="education-details"><span>2021 — May 2025</span><span>GPA 3.6 / 4.0</span></div></div></div></section>
-
-      <div className="focus-tree-wrapper reveal">
-        <div className="knowledge-tree" aria-label="AI knowledge focus tree">
-          <div className="tree-root-wrap"><div className="tree-root">{focusTree.root}</div></div>
-          <div className="tree-branches">
-            {focusTree.groups.map((group) => (
-              <div className="tree-branch" key={group.label}>
-                <div className="tree-node tree-node-main">{group.label}</div>
-                {group.children.length > 0 && (
-                  <div className="tree-children">
-                    {group.children.map((child) => <div className="tree-node tree-node-small" key={child}>{child}</div>)}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
       <section className="section-pad experience-section" id="experience"><div className="section-intro split-intro reveal"><div><p className="eyebrow">02 / Experience</p><h2>Where the work<br /><em>gets real.</em></h2></div><p>From industrial sensor data to enterprise workflows, each chapter has taught me to make models more honest, useful, and resilient.</p></div><div className="experience-list">{experience.map((item, index) => { const Icon = item.icon; return <article className={`experience-card reveal reveal-delay-${Math.min(index + 1, 4)} ${item.featured ? "featured" : ""}`} key={`${item.company}-${item.role}`}><div className="experience-header"><div className="experience-company-block"><div className="experience-icon"><Icon size={18} /></div><div><p className="eyebrow">{item.company}</p><h3>{item.role}</h3></div></div><div className="experience-meta"><span className="experience-date"><CalendarDays size={13} /> {item.period}</span><span className="experience-location"><MapPin size={13} /> {item.location}</span></div></div><ul className="experience-points">{item.achievements.map((achievement) => <li key={achievement}>{achievement.split(/(30M\+|20–30%|7%|60%|40%)/g).map((part, index) => /^(30M\+|20–30%|7%|60%|40%)$/.test(part) ? <strong key={`${part}-${index}`}>{part}</strong> : <span key={`${part}-${index}`}>{part}</span>)}</li>)}</ul><div className="experience-tech">{item.technologies.map((tech) => <span key={tech}>{tech}</span>)}</div></article>; })}</div></section>
 
