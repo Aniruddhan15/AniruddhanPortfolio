@@ -1,6 +1,6 @@
 import { StrictMode, useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { ArrowDown, ArrowUpRight, BriefcaseBusiness, BrainCircuit, CalendarDays, CheckCircle2, Code2, Database, Download, ExternalLink, GraduationCap, Layers3, Mail, MapPin, Menu, MoveUpRight, Send, Sparkles, Workflow, X } from "lucide-react";
+import { ArrowDown, ArrowUpRight, BriefcaseBusiness, BrainCircuit, CalendarDays, Check, CheckCircle2, Code2, Database, Download, ExternalLink, Eye, FileText, GraduationCap, Layers3, Mail, MapPin, Menu, MoveUpRight, Send, Sparkles, Workflow, X } from "lucide-react";
 import "./styles.css";
 import "./reveal.css";
 
@@ -97,22 +97,103 @@ const publications = [
   { title: "Obesity Risk Classification via Ensemble Modeling", status: "Under review", description: "Submitted manuscript" },
 ];
 
+// Role-tailored resumes shown in the resume picker. Add Data Engineer / AI Engineer entries here.
+const resumes = [
+  {
+    id: "data-science",
+    role: "Data Science",
+    title: "Data Science Resume",
+    tagline: "Evidence-first modeling — experimentation, statistics, and time series that drive decisions.",
+    highlights: [
+      { value: "30M+", text: "sensor records modeled at KCF, with a 20–30% lift in unhealthy-class recall" },
+      { value: "4", text: "ML research works, one published in Scientific Reports" },
+      { value: "228K+", text: "NASA observations behind a 3-hour-ahead storm early-warning system" },
+    ],
+    focus: ["Statistical Modeling", "Time Series", "PySpark", "SQL", "MLflow"],
+    file: "resumes/Aniruddhan_Narasimhan_Data_Science_Resume.pdf",
+    preview: "resumes/data-science-preview.webp",
+    size: "301 KB",
+    updated: "Sep 2026",
+    color: "mint",
+  },
+  {
+    id: "ml-engineer",
+    role: "ML Engineering",
+    title: "ML Engineer Resume",
+    tagline: "From model to production — distributed training, agentic systems, and MLOps.",
+    highlights: [
+      { value: "3.26×", text: "cumulative training speedup from CompressIQ at 90.71% test accuracy" },
+      { value: "8-node", text: "LangGraph agent (ALTA) rerouting 900+ cold-chain cargo routes" },
+      { value: "CI/CD", text: "FastAPI, DVC, Docker, and drift monitoring on AWS for live inference" },
+    ],
+    focus: ["PyTorch", "Distributed Training", "LangGraph", "FastAPI", "Docker"],
+    file: "resumes/Aniruddhan_Narasimhan_ML_Engineer_Resume.pdf",
+    preview: "resumes/ml-engineer-preview.webp",
+    size: "481 KB",
+    updated: "Sep 2026",
+    color: "orange",
+  },
+];
+
 const statusClass = { "Published": "status-published", "Preprint": "status-preprint", "Under review": "status-review" };
 const countWords = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
 const marqueeWords = ["RESEARCH-LED", "IMPACT-FOCUSED", "ALWAYS LEARNING"];
 const highlightPattern = /(30M\+|20–30%|7%|60%|40%)/g;
-const rippleSelector = ".button, .filter-row button, .main-nav a, .project-open, .modal-close, .contact-links a, .menu-toggle, .inline-link, .project-card";
+const rippleSelector = ".button, .filter-row button, .main-nav a, .nav-resume, .contact-links button, .resume-thumb, .project-open, .modal-close, .contact-links a, .menu-toggle, .inline-link, .project-card";
+
+// Plays the fade-out before actually unmounting a dialog.
+function useAnimatedClose(onClosed) {
+  const [closing, setClosing] = useState(false);
+  const timer = useRef(0);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  const close = useCallback(() => {
+    setClosing(true);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      onClosed();
+      setClosing(false);
+    }, 260);
+  }, [onClosed]);
+  return [closing, close];
+}
+
+// Scroll lock, Escape to close, focus trap, and focus restore for an open dialog.
+function useDialog(isOpen, dialogRef, onClose) {
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    document.body.classList.add("modal-open");
+    const opener = document.activeElement;
+    dialogRef.current?.querySelector(".modal-close")?.focus({ preventScroll: true });
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") onClose();
+      if (event.key !== "Tab" || !dialogRef.current) return;
+      const focusables = dialogRef.current.querySelectorAll("button, a[href]");
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.classList.remove("modal-open");
+      opener?.focus?.({ preventScroll: true });
+    };
+  }, [isOpen, dialogRef, onClose]);
+}
 
 function App() {
   const [activeSection, setActiveSection] = useState("home");
   const [menuOpen, setMenuOpen] = useState(false);
   const [projectFilter, setProjectFilter] = useState("All");
   const [selectedProject, setSelectedProject] = useState(null);
-  const [modalClosing, setModalClosing] = useState(false);
+  const [resumeOpen, setResumeOpen] = useState(false);
+  const [downloadedResume, setDownloadedResume] = useState(null);
   const headerRef = useRef(null);
   const progressRef = useRef(null);
   const modalRef = useRef(null);
-  const closeTimer = useRef(0);
+  const resumeModalRef = useRef(null);
+  const downloadTimer = useRef(0);
   const categories = ["All", ...new Set(projects.map((project) => project.category))];
   // Filtering only helps once some category holds more than one project.
   const showFilter = categories.slice(1).some((category) => projects.filter((project) => project.category === category).length > 1);
@@ -172,38 +253,21 @@ function App() {
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, []);
 
-  const closeProject = useCallback(() => {
-    setModalClosing(true);
-    clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(() => {
-      setSelectedProject(null);
-      setModalClosing(false);
-    }, 260);
-  }, []);
+  const clearProject = useCallback(() => setSelectedProject(null), []);
+  const [projectClosing, closeProject] = useAnimatedClose(clearProject);
+  useDialog(Boolean(selectedProject), modalRef, closeProject);
 
-  useEffect(() => () => clearTimeout(closeTimer.current), []);
+  const hideResume = useCallback(() => setResumeOpen(false), []);
+  const [resumeClosing, closeResume] = useAnimatedClose(hideResume);
+  useDialog(resumeOpen, resumeModalRef, closeResume);
+  useEffect(() => () => clearTimeout(downloadTimer.current), []);
 
-  useEffect(() => {
-    document.body.classList.toggle("modal-open", Boolean(selectedProject));
-    if (!selectedProject) return undefined;
-    const opener = document.activeElement;
-    modalRef.current?.querySelector(".modal-close")?.focus({ preventScroll: true });
-    const onKeyDown = (event) => {
-      if (event.key === "Escape") closeProject();
-      if (event.key !== "Tab" || !modalRef.current) return;
-      const focusables = modalRef.current.querySelectorAll("button, a[href]");
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.body.classList.remove("modal-open");
-      opener?.focus?.({ preventScroll: true });
-    };
-  }, [selectedProject, closeProject]);
+  const openResume = () => { setMenuOpen(false); setResumeOpen(true); };
+  const markDownloaded = (id) => {
+    setDownloadedResume(id);
+    clearTimeout(downloadTimer.current);
+    downloadTimer.current = setTimeout(() => setDownloadedResume(null), 2600);
+  };
 
   const jumpTo = (id) => { setMenuOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); };
   const visibleProjects = projectFilter === "All" ? projects : projects.filter((project) => project.category === projectFilter);
@@ -216,7 +280,7 @@ function App() {
       </button>
       <nav className={`main-nav ${menuOpen ? "is-open" : ""}`} aria-label="Primary navigation">
         {navItems.map((item, index) => <a className={activeSection === item ? "active" : ""} href={`#${item}`} key={item} style={{ "--i": index }} onClick={() => jumpTo(item)}>{item === "home" ? "Home" : item}</a>)}
-        <a className="nav-resume" href={`${baseUrl}resume.pdf`} target="_blank" rel="noreferrer" style={{ "--i": navItems.length }}><Download size={15} /> Resume</a>
+        <button className="nav-resume" type="button" onClick={openResume} aria-haspopup="dialog" style={{ "--i": navItems.length }}><Download size={15} /> Resume</button>
       </nav>
       <div className="scroll-progress" ref={progressRef} aria-hidden="true" />
     </header>
@@ -355,13 +419,13 @@ function App() {
           <h2>Have a hard problem?<br /><em>Let’s make it legible.</em></h2>
           <p>I’m always open to thoughtful conversations about machine learning, research, and building tools with real-world value.</p>
           <a className="button button-primary" href="mailto:aniruddhan26@gmail.com">aniruddhan26@gmail.com <Send size={16} /></a>
-          <div className="contact-links"><a href="https://github.com/Aniruddhan15" target="_blank" rel="noreferrer"><Code2 size={16} /> GitHub</a><a href="https://www.linkedin.com/in/aniruddhan-narasimhan-15688021b/" target="_blank" rel="noreferrer"><BriefcaseBusiness size={16} /> LinkedIn</a></div>
+          <div className="contact-links"><a href="https://github.com/Aniruddhan15" target="_blank" rel="noreferrer"><Code2 size={16} /> GitHub</a><a href="https://www.linkedin.com/in/aniruddhan-narasimhan-15688021b/" target="_blank" rel="noreferrer"><BriefcaseBusiness size={16} /> LinkedIn</a><button type="button" onClick={openResume} aria-haspopup="dialog"><FileText size={16} /> Resume</button></div>
         </div>
       </section>
     </main>
 
     <footer className="site-footer reveal"><span>© {new Date().getFullYear()} Aniruddhan Narasimhan</span><span>Built with curiosity · <a href="#home" onClick={() => jumpTo("home")}>Back to top ↑</a></span></footer>
-    {selectedProject && <div className={`modal-backdrop ${modalClosing ? "is-closing" : ""}`} role="presentation" onClick={closeProject}>
+    {selectedProject && <div className={`modal-backdrop ${projectClosing ? "is-closing" : ""}`} role="presentation" onClick={closeProject}>
       <div className="project-modal" role="dialog" aria-modal="true" aria-labelledby="project-title" ref={modalRef} onClick={(event) => event.stopPropagation()}>
         <button className="modal-close" onClick={closeProject} aria-label="Close project details"><X size={20} /></button>
         <p className="eyebrow">{selectedProject.category} · {selectedProject.year}</p>
@@ -369,6 +433,38 @@ function App() {
         <p>{selectedProject.detail}</p>
         <div className="tag-row">{selectedProject.tags.map((tag, tagIndex) => <span key={tag} style={{ "--i": tagIndex }}>{tag}</span>)}</div>
         <a className="button button-primary" href={selectedProject.link} target={selectedProject.link.startsWith("http") ? "_blank" : undefined} rel="noreferrer">{selectedProject.linkLabel} {selectedProject.link.startsWith("mailto:") ? <Mail size={16} /> : <ExternalLink size={16} />}</a>
+      </div>
+    </div>}
+    {resumeOpen && <div className={`modal-backdrop ${resumeClosing ? "is-closing" : ""}`} role="presentation" onClick={closeResume}>
+      <div className="resume-modal" role="dialog" aria-modal="true" aria-labelledby="resume-title" ref={resumeModalRef} onClick={(event) => event.stopPropagation()}>
+        <button className="modal-close" onClick={closeResume} aria-label="Close resume picker"><X size={20} /></button>
+        <div className="resume-modal-head">
+          <p className="eyebrow">Resume · Full-Time 2027</p>
+          <h2 id="resume-title">Pick the version <em>that fits the role.</em></h2>
+          <p>Same experience, different emphasis. Each resume is tailored to what that role cares about most.</p>
+        </div>
+        <div className="resume-grid">
+          {resumes.map((resume, index) => <article className={`resume-option ${resume.color}`} key={resume.id} style={{ "--i": index }}>
+            <a className="resume-thumb" href={`${baseUrl}${resume.file}`} target="_blank" rel="noreferrer" aria-label={`Open the full ${resume.title} in a new tab`}>
+              <img src={`${baseUrl}${resume.preview}`} alt="" />
+              <span className="resume-thumb-hint"><Eye size={15} /> Preview full page</span>
+            </a>
+            <div className="resume-body">
+              <p className="resume-kicker">0{index + 1} · {resume.role}</p>
+              <h3>{resume.title}</h3>
+              <p className="resume-tagline">{resume.tagline}</p>
+              <ul className="resume-highlights">{resume.highlights.map((highlight, highlightIndex) => <li key={highlight.value} style={{ "--j": highlightIndex }}><strong>{highlight.value}</strong><span>{highlight.text}</span></li>)}</ul>
+              <div className="tag-row">{resume.focus.map((skill, skillIndex) => <span key={skill} style={{ "--i": skillIndex }}>{skill}</span>)}</div>
+              <div className="resume-meta"><span><FileText size={13} /> PDF · 1 page · {resume.size}</span><span>Updated {resume.updated}</span></div>
+              <div className="resume-actions">
+                <a className={`button button-primary resume-download ${downloadedResume === resume.id ? "is-done" : ""}`} href={`${baseUrl}${resume.file}`} download={resume.file.split("/").pop()} onClick={() => markDownloaded(resume.id)}>
+                  {downloadedResume === resume.id ? <span className="download-label" key="done">Downloaded <Check size={16} /></span> : <span className="download-label" key="idle">Download PDF <Download size={16} /></span>}
+                </a>
+                <a className="button button-quiet" href={`${baseUrl}${resume.file}`} target="_blank" rel="noreferrer">View <ExternalLink size={15} /></a>
+              </div>
+            </div>
+          </article>)}
+        </div>
       </div>
     </div>}
   </div>;
