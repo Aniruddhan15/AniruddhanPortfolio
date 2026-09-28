@@ -21,7 +21,7 @@ After pushing:
 4. Push to the `main` branch.
 5. Wait for the deployment workflow to complete.
 
-The site is live [https://aniruddhan15.github.io/AniruddhanPortfolio/](https://aniruddhan15.github.io/AniruddhanPortfolio/).
+The site is live [https://aniruddhan15.github.io/AniruddhanPortfolio/](https://aniruddhan15.github.io/AniruddhanPortfolio/#home).
 
 The workflow in `.github/workflows/deploy.yml` builds `dist/` and deploys it using the official GitHub Pages actions. Vite uses `/AniruddhanPortfolio/` as its GitHub Pages base path.
 
