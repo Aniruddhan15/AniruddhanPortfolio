@@ -1,17 +1,100 @@
 import { StrictMode, useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { ArrowDown, ArrowUpRight, BriefcaseBusiness, BrainCircuit, CalendarDays, Check, CheckCircle2, Code2, Database, Download, ExternalLink, Eye, FileText, GraduationCap, Layers3, Mail, MapPin, Menu, MoveUpRight, Send, Sparkles, Workflow, X } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Bot, BriefcaseBusiness, BrainCircuit, CalendarDays, ChartColumn, Check, CheckCircle2, Code2, Database, Download, ExternalLink, Eye, FileText, GraduationCap, Layers3, Lock, Mail, MapPin, Menu, MoveUpRight, Send, Sparkles, Star, Workflow, X } from "lucide-react";
 import "./styles.css";
 import "./reveal.css";
 
 const baseUrl = import.meta.env.BASE_URL;
 
 const navItems = ["home", "about", "experience", "projects", "skills", "publications", "contact"];
+const projectCategories = [
+  { id: "ml", label: "Data Science / Machine Learning", tab: "DS / ML", icon: BrainCircuit, color: "mint", blurb: "End-to-end ML systems, deep learning research, and distributed training — built to be measured, not just demoed." },
+  { id: "agentic", label: "Agentic AI", tab: "Agentic AI", icon: Bot, color: "orange", blurb: "Multi-step agents that reason over live data, route decisions, and act in the real world — with a human in the loop." },
+  { id: "genai", label: "Generative AI", tab: "Generative AI", icon: Sparkles, color: "purple", blurb: "LLM-powered apps that turn a prompt or a photo into an answer someone can use." },
+  { id: "analysis", label: "Data Analysis", tab: "Data Analysis", icon: ChartColumn, color: "blue", blurb: "Asking sharp questions of real data — and answering them in SQL." },
+];
+
+// Each card links to its GitHub repo; `extra` adds a secondary link (paper, live demo).
 const projects = [
-  { title: "AI-Powered Nutrition Analyzer", category: "GenAI", year: "2025", summary: "A deployed nutrition companion that reads meals from images, estimates macros, and turns a single upload into practical recommendations.", detail: "Built with Gemini Vision Pro, Python, Git, and Streamlit Community Cloud. The product combines meal recognition, macro-nutrient estimation, personalized recommendations, and dietary tracking in one focused workflow.", tags: ["Gemini Vision", "Python", "Streamlit"], link: "https://github.com/Aniruddhan15/NUTRITION_APP-USING-GEMINI-API", linkLabel: "View on GitHub", color: "orange" },
-  { title: "Brain Tumor Detection with ResNet-50", category: "Computer vision", year: "2025", summary: "An MRI classification pipeline tuned for robust tumor versus non-tumor prediction, with 99% AUC and a 12% accuracy lift over VGG-19.", detail: "The work combined transfer learning, augmentation, class balancing, preprocessing, and threshold optimization with TensorFlow, Keras, Scikit-learn, and OpenCV.", tags: ["ResNet-50", "TensorFlow", "OpenCV"], link: "https://github.com/Aniruddhan15/Brain_Tumour_Prediction_Resnet_50", linkLabel: "View on GitHub", color: "mint" },
-  { title: "DDoS Detection with Adaptive ML Pipelines", category: "Research", year: "2025", summary: "Scalable cloud-oriented machine learning pipelines for adaptive DDoS detection and more responsive security operations.", detail: "A research contribution focused on scalable deployment techniques, adaptive model workflows, and cloud security. The work is available as a TechRxiv preprint.", tags: ["MLOps", "AWS", "Docker"], link: "https://doi.org/10.36227/techrxiv.175037203.37181551/v1", linkLabel: "Read the preprint", color: "blue" },
-  { title: "Advertising Performance Modeling", category: "Applied ML", year: "2024", summary: "Predictive modeling and time-series analysis for digital advertising data, improving predictive accuracy by 7%.", detail: "At Fincrux Technologies, I used Python, statistical modeling, preprocessing, and data validation to identify revenue-impacting patterns for campaign and targeting decisions. This was client work, so the code isn’t public — happy to walk through it.", tags: ["Python", "Statistics", "Time series"], link: "mailto:aniruddhan26@gmail.com?subject=Advertising%20Modeling", linkLabel: "Ask me about it", color: "purple" },
+  {
+    category: "ml", featured: true, year: "2026", kind: "MLOps system",
+    title: "Geomagnetic Storm Early-Warning System",
+    overview: "An end-to-end MLOps system that forecasts Kp ≥ 5 geomagnetic storms three hours ahead — trained on NASA OMNI2 history and served live from NOAA real-time solar-wind feeds, with automated retraining and drift monitoring.",
+    metrics: [{ value: "228K+", label: "hourly observations" }, { value: "3 hr", label: "advance warning" }, { value: "Live", label: "NOAA inference" }],
+    tags: ["FastAPI", "MLflow", "DVC", "Docker", "AWS", "GitHub Actions", "Evidently"],
+    link: "https://github.com/Aniruddhan15/Project-Machine_Learning_System",
+  },
+  {
+    category: "ml", featured: true, kind: "Distributed training",
+    title: "CompressIQ",
+    overview: "A bandwidth-aware gradient compression system for heterogeneous distributed training. A CVXPY convex optimizer chooses error-feedback-aware, per-layer compression for ring all-reduce across a 12-worker, 3-tier cluster.",
+    metrics: [{ value: "3.26×", label: "cumulative speedup" }, { value: "1.85×", label: "faster communication" }, { value: "90.71%", label: "test accuracy kept" }],
+    tags: ["PyTorch", "CVXPY", "Convex Optimization", "Distributed Systems"],
+    link: "mailto:aniruddhan26@gmail.com?subject=CompressIQ%20code",
+  },
+  {
+    category: "ml", featured: true, year: "2025", kind: "Research · Quantum ML",
+    title: "Hybrid Quantum–Classical Brain Tumor Detection",
+    overview: "Pairs a ResNet-50 feature extractor with a quantum variational circuit for MRI tumor classification, benchmarked against CNN, VGG and ResNet-50 baselines. Published in Scientific Reports (Nature Portfolio).",
+    metrics: [{ value: "Published", label: "Scientific Reports" }, { value: "4", label: "classical baselines" }],
+    tags: ["PennyLane", "ResNet-50", "Quantum Circuits", "Transfer Learning"],
+    link: "https://github.com/Aniruddhan15/Brain-Tumor-Detection-using-Hybrid-Deep-Learning-Quantum-Model",
+    extra: { label: "Paper", href: "https://www.nature.com/articles/s41598-026-51263-x" },
+  },
+  {
+    category: "ml", year: "2024", kind: "Computer vision",
+    title: "Brain Tumor Detection — ResNet-50 with Attention",
+    overview: "A fine-tuned ResNet-50 with an attention layer for tumor vs. non-tumor MRI classification, made robust with augmentation, class balancing, and threshold optimization.",
+    metrics: [{ value: "99%", label: "AUC" }, { value: "+12%", label: "accuracy vs. VGG-19" }],
+    tags: ["TensorFlow", "Keras", "OpenCV", "Scikit-learn"],
+    link: "https://github.com/Aniruddhan15/Brain-Tumor-Detection-using-Renset-50-with-Attention-Layer",
+  },
+  {
+    category: "ml", year: "2024", kind: "Regression · App",
+    title: "Honey Price Prediction",
+    overview: "An end-to-end regression project: exploratory analysis of a honey-purity dataset, a Decision Tree price model, and a Streamlit app that returns instant price estimates.",
+    tags: ["Scikit-learn", "Pandas", "Seaborn", "Streamlit"],
+    link: "https://github.com/Aniruddhan15/Honey_Price_Prediction_End2End",
+  },
+  {
+    category: "agentic", featured: true, year: "2026", kind: "Multi-agent platform",
+    title: "ALTA — Adaptive Logistics & Tracking Agent",
+    overview: "A real-time agentic platform for pharmaceutical cold-chain monitoring. An 8-node LangGraph pipeline on GPT-4o scores risk, routes by shipment state, and proposes actions a human approves — with an autonomous rerouting sub-agent and compliance audit logs.",
+    metrics: [{ value: "8-node", label: "LangGraph pipeline" }, { value: "900+", label: "cargo routes" }, { value: "HITL", label: "human approval" }],
+    tags: ["LangGraph", "LangChain", "GPT-4o", "FastAPI", "React", "TypeScript"],
+    link: "https://github.com/Aniruddhan15/Cargo-Monitoring",
+    extra: { label: "Live demo", href: "https://alta-logistics-agent.netlify.app" },
+  },
+  {
+    category: "agentic", featured: true, year: "2026", kind: "NLP + MCP agent",
+    title: "MedAgent — Medical Document Intelligence",
+    overview: "Turns any lab-report PDF into plain-language insights: OCR ingestion, BioBERT medical NER, a lab-value severity parser, Llama-3.3-70B simplification, and an MCP agent that sets calendar reminders, drafts emails, and posts Slack nudges.",
+    metrics: [{ value: "87.01%", label: "NER F1 (BioBERT)" }, { value: "+6.6", label: "reading grades simpler" }, { value: "4/4", label: "MCP tools working" }],
+    tags: ["BioBERT", "Llama-3.3-70B", "MCP", "FastAPI", "Tesseract OCR"],
+    link: "https://github.com/Aniruddhan15/MedAgent-An-End-to-End-Medical-Document-Intelligence-System",
+  },
+  {
+    category: "genai", year: "2024", kind: "Vision LLM app",
+    title: "AI Nutrition Analyzer",
+    overview: "Upload a photo of a meal and Gemini Pro Vision identifies the food, estimates macronutrients, and returns personalized dietary guidance — packaged as a Streamlit app.",
+    tags: ["Gemini Pro Vision", "Streamlit", "Python"],
+    link: "https://github.com/Aniruddhan15/NUTRITION_APP-USING-GEMINI-API",
+  },
+  {
+    category: "genai", year: "2024", kind: "LLM assistant",
+    title: "IPL Win Predictor Assistant",
+    overview: "A Streamlit assistant that feeds match context — teams, venue, pitch conditions — to Gemini Pro and returns a reasoned win prediction with key match insights.",
+    tags: ["Gemini Pro", "Prompt Engineering", "Streamlit"],
+    link: "https://github.com/Aniruddhan15/AI-IPL-Win-Predictor-Assistant-WebApp",
+  },
+  {
+    category: "analysis", year: "2024", kind: "SQL analysis",
+    title: "IPL Data Analysis with SQL",
+    overview: "SQL analyses over IPL match and ball-by-ball data — strike rates, partnerships, toss impact, boundary trends, and bowler performance — built with joins, aggregations, and CTEs.",
+    metrics: [{ value: "18", label: "analytical queries" }, { value: "2", label: "joined datasets" }],
+    tags: ["SQL", "CTEs", "Joins", "Aggregations"],
+    link: "https://github.com/Aniruddhan15/SQL_IPL_DATA_ANALYSIS_PROJECT",
+  },
 ];
 
 const experience = [
@@ -139,7 +222,7 @@ const statusClass = { "Published": "status-published", "Preprint": "status-prepr
 const countWords = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
 const marqueeWords = ["RESEARCH-LED", "IMPACT-FOCUSED", "ALWAYS LEARNING"];
 const highlightPattern = /(30M\+|20–30%|7%|60%|40%)/g;
-const rippleSelector = ".button, .filter-row button, .main-nav a, .nav-resume, .contact-links button, .resume-thumb, .project-open, .modal-close, .contact-links a, .menu-toggle, .inline-link, .project-card";
+const rippleSelector = ".button, .project-tabs button, .main-nav a, .nav-resume, .contact-links button, .resume-thumb, .modal-close, .contact-links a, .menu-toggle, .inline-link, .project-card";
 
 // Plays the fade-out before actually unmounting a dialog.
 function useAnimatedClose(onClosed) {
@@ -182,21 +265,47 @@ function useDialog(isOpen, dialogRef, onClose) {
   }, [isOpen, dialogRef, onClose]);
 }
 
+function GithubMark({ size = 16 }) {
+  return <svg viewBox="0 0 16 16" width={size} height={size} fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" /></svg>;
+}
+
+function ProjectCard({ project, category, index }) {
+  const Icon = category.icon;
+  const isRepo = project.link.startsWith("http");
+  return <article className={`project-card reveal reveal-delay-${Math.min(index + 1, 4)}`}>
+    <div className="project-card-top">
+      <span className="project-icon"><Icon size={17} /></span>
+      <span className="project-kind">{project.kind}</span>
+      <span className="project-flags">
+        {project.featured && <span className="project-badge"><Star size={10} /> Featured</span>}
+        {project.year && <span className="project-year">{project.year}</span>}
+      </span>
+    </div>
+    <h3><a className="project-link" href={project.link} target={isRepo ? "_blank" : undefined} rel="noreferrer">{project.title}</a></h3>
+    <p className="project-overview">{project.overview}</p>
+    {project.metrics && <dl className="project-metrics">{project.metrics.map((metric, metricIndex) => <div key={metric.label} style={{ "--j": metricIndex }}><dt>{metric.value}</dt><dd>{metric.label}</dd></div>)}</dl>}
+    <div className="tag-row">{project.tags.map((tag, tagIndex) => <span key={tag} style={{ "--i": tagIndex }}>{tag}</span>)}</div>
+    <div className="project-footer">
+      <span className="project-cta">{isRepo ? <><GithubMark /> View on GitHub</> : <><Lock size={14} /> Code on request</>}<ArrowUpRight size={16} className="cta-arrow" /></span>
+      {project.extra && <a className="project-extra" href={project.extra.href} target="_blank" rel="noreferrer">{project.extra.label} <ExternalLink size={12} /></a>}
+    </div>
+  </article>;
+}
+
 function App() {
   const [activeSection, setActiveSection] = useState("home");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [projectFilter, setProjectFilter] = useState("All");
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [projectFilter, setProjectFilter] = useState("all");
   const [resumeOpen, setResumeOpen] = useState(false);
   const [downloadedResume, setDownloadedResume] = useState(null);
   const headerRef = useRef(null);
   const progressRef = useRef(null);
-  const modalRef = useRef(null);
+  const tabsRef = useRef(null);
+  const projectListRef = useRef(null);
   const resumeModalRef = useRef(null);
   const downloadTimer = useRef(0);
-  const categories = ["All", ...new Set(projects.map((project) => project.category))];
-  // Filtering only helps once some category holds more than one project.
-  const showFilter = categories.slice(1).some((category) => projects.filter((project) => project.category === category).length > 1);
+  const projectTabs = [{ id: "all", tab: "All projects", color: "mint" }, ...projectCategories].map((tab) => ({ ...tab, count: tab.id === "all" ? projects.length : projects.filter((project) => project.category === tab.id).length }));
+  const visibleCategories = projectFilter === "all" ? projectCategories : projectCategories.filter((category) => category.id === projectFilter);
 
   // Visibility lives in a data attribute so React re-rendering className can't wipe it,
   // and the effect re-runs on filter changes so newly mounted cards get observed.
@@ -253,9 +362,28 @@ function App() {
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, []);
 
-  const clearProject = useCallback(() => setSelectedProject(null), []);
-  const [projectClosing, closeProject] = useAnimatedClose(clearProject);
-  useDialog(Boolean(selectedProject), modalRef, closeProject);
+  // Slide the tab highlight under the active project filter.
+  useEffect(() => {
+    const update = () => {
+      const list = tabsRef.current;
+      const active = list?.querySelector('[aria-pressed="true"]');
+      if (!active) return;
+      list.style.setProperty("--tab-x", `${active.offsetLeft}px`);
+      list.style.setProperty("--tab-w", `${active.offsetWidth}px`);
+      active.scrollIntoView({ block: "nearest", inline: "nearest" });
+    };
+    update();
+    document.fonts?.ready.then(update);
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [projectFilter]);
+
+  const selectProjectFilter = (id) => {
+    setProjectFilter(id);
+    // If the list has scrolled under the sticky tabs, bring its start back into view.
+    const top = projectListRef.current?.getBoundingClientRect().top ?? 0;
+    if (top < 150) window.scrollTo({ top: window.scrollY + top - 150, behavior: "smooth" });
+  };
 
   const hideResume = useCallback(() => setResumeOpen(false), []);
   const [resumeClosing, closeResume] = useAnimatedClose(hideResume);
@@ -270,7 +398,6 @@ function App() {
   };
 
   const jumpTo = (id) => { setMenuOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); };
-  const visibleProjects = projectFilter === "All" ? projects : projects.filter((project) => project.category === projectFilter);
 
   return <div className="site-shell">
     <header className="site-header" ref={headerRef}>
@@ -369,17 +496,26 @@ function App() {
       </section>
 
       <section className="section-pad projects-section" id="projects">
-        <div className="section-intro split-intro reveal"><div><p className="eyebrow">03 / Selected work</p><h2>Built to answer<br /><em>better questions.</em></h2></div><p>Explore a selection of projects across computer vision, GenAI, applied modeling, and ML research.</p></div>
-        {showFilter && <div className="filter-row reveal">{categories.map((category) => <button className={projectFilter === category ? "filter-active" : ""} key={category} onClick={() => setProjectFilter(category)}>{category}</button>)}</div>}
-        <div className="project-grid">
-          {visibleProjects.map((project, index) => <article className={`project-card ${project.color} reveal reveal-delay-${Math.min(index + 1, 4)}`} key={`${projectFilter}-${project.title}`} onClick={() => setSelectedProject(project)}>
-            <div className="project-card-top"><span>{project.category}</span><span>{project.year}</span></div>
-            <div className="project-art"><div className="art-lines" /><div className="art-core">{project.category === "GenAI" ? <Sparkles /> : project.category === "Computer vision" ? <BrainCircuit /> : project.category === "Research" ? <Database /> : <Workflow />}</div></div>
-            <h3>{project.title}</h3>
-            <p>{project.summary}</p>
-            <div className="tag-row">{project.tags.map((tag, tagIndex) => <span key={tag} style={{ "--i": tagIndex }}>{tag}</span>)}</div>
-            <button className="project-open" aria-label={`View ${project.title}`}><ArrowUpRight size={18} /></button>
-          </article>)}
+        <div className="section-intro split-intro reveal"><div><p className="eyebrow">03 / Selected work</p><h2>Built to answer<br /><em>better questions.</em></h2></div><p>{countWords[projects.length] ?? projects.length} projects across {countWords[projectCategories.length]?.toLowerCase() ?? projectCategories.length} tracks. Every card opens its code on GitHub.</p></div>
+        <div className="project-tabs-wrap reveal">
+          <div className="project-tabs" ref={tabsRef} data-color={projectTabs.find((tab) => tab.id === projectFilter)?.color} aria-label="Filter projects by track">
+            <span className="tab-indicator" aria-hidden="true" />
+            {projectTabs.map((tab) => <button type="button" key={tab.id} aria-pressed={projectFilter === tab.id} onClick={() => selectProjectFilter(tab.id)}>{tab.tab}<span className="tab-count">{tab.count}</span></button>)}
+          </div>
+        </div>
+        <div className="project-groups" ref={projectListRef} key={projectFilter}>
+          {visibleCategories.map((category) => {
+            const items = projects.filter((project) => project.category === category.id);
+            const number = String(projectCategories.indexOf(category) + 1).padStart(2, "0");
+            return <section className={`project-group accent-${category.color}`} key={category.id} aria-labelledby={`group-${category.id}`}>
+              <header className="project-group-head reveal">
+                <span className="group-index">{number}</span>
+                <div><h3 id={`group-${category.id}`}>{category.label}</h3><p>{category.blurb}</p></div>
+                <span className="group-count">{items.length} {items.length === 1 ? "project" : "projects"}</span>
+              </header>
+              <div className="project-grid">{items.map((project, index) => <ProjectCard project={project} category={category} index={index} key={`${projectFilter}-${project.title}`} />)}</div>
+            </section>;
+          })}
         </div>
       </section>
 
@@ -425,16 +561,6 @@ function App() {
     </main>
 
     <footer className="site-footer reveal"><span>© {new Date().getFullYear()} Aniruddhan Narasimhan</span><span>Built with curiosity · <a href="#home" onClick={() => jumpTo("home")}>Back to top ↑</a></span></footer>
-    {selectedProject && <div className={`modal-backdrop ${projectClosing ? "is-closing" : ""}`} role="presentation" onClick={closeProject}>
-      <div className="project-modal" role="dialog" aria-modal="true" aria-labelledby="project-title" ref={modalRef} onClick={(event) => event.stopPropagation()}>
-        <button className="modal-close" onClick={closeProject} aria-label="Close project details"><X size={20} /></button>
-        <p className="eyebrow">{selectedProject.category} · {selectedProject.year}</p>
-        <h2 id="project-title">{selectedProject.title}</h2>
-        <p>{selectedProject.detail}</p>
-        <div className="tag-row">{selectedProject.tags.map((tag, tagIndex) => <span key={tag} style={{ "--i": tagIndex }}>{tag}</span>)}</div>
-        <a className="button button-primary" href={selectedProject.link} target={selectedProject.link.startsWith("http") ? "_blank" : undefined} rel="noreferrer">{selectedProject.linkLabel} {selectedProject.link.startsWith("mailto:") ? <Mail size={16} /> : <ExternalLink size={16} />}</a>
-      </div>
-    </div>}
     {resumeOpen && <div className={`modal-backdrop ${resumeClosing ? "is-closing" : ""}`} role="presentation" onClick={closeResume}>
       <div className="resume-modal" role="dialog" aria-modal="true" aria-labelledby="resume-title" ref={resumeModalRef} onClick={(event) => event.stopPropagation()}>
         <button className="modal-close" onClick={closeResume} aria-label="Close resume picker"><X size={20} /></button>
